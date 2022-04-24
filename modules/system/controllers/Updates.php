@@ -33,7 +33,7 @@ class Updates extends Controller
      * @var array Extensions implemented by this controller.
      */
     public $implement = [
-        \Backend\Behaviors\ListController::class
+        \Backend\Behaviors\ListController::class,
     ];
 
     /**
@@ -240,6 +240,17 @@ class Updates extends Controller
                 $warnings[] = Lang::get('system::lang.updates.update_warnings_plugin_missing', [
                     'code' => '<strong>' . $missingPluginCode . '</strong>',
                     'parent_code' => '<strong>' . $pluginCode . '</strong>'
+                ]);
+            }
+        }
+
+        $replacementMap = PluginManager::instance()->getReplacementMap();
+
+        foreach ($replacementMap as $alias => $plugin) {
+            if (PluginManager::instance()->getActiveReplacementMap($alias)) {
+                $warnings[] = Lang::get('system::lang.updates.update_warnings_plugin_replace', [
+                    'plugin' => '<strong>' . $plugin . '</strong>',
+                    'alias' => '<strong>' . $alias . '</strong>'
                 ]);
             }
         }
