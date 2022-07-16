@@ -7,6 +7,8 @@ use BackendMenu;
 use Backend\Classes\Controller;
 use System\Classes\SettingsManager;
 use System\Models\EventLog;
+use Symfony\Component\VarDumper\Cloner\VarCloner;
+use Symfony\Component\VarDumper\Dumper\HtmlDumper;
 
 /**
  * Event Logs controller
@@ -85,5 +87,24 @@ class EventLogs extends Controller
         }
 
         return $this->asExtension('FormController')->preview($id);
+    }
+
+    /**
+     * Output an HTML representation of the event log details column.
+     *
+     * @param mixed $value
+     * @return string|void
+     */
+    protected function dumpDetails($value)
+    {
+        if ($value === null) {
+            return;
+        }
+
+        $cloner = new VarCloner();
+        $dumper = new HtmlDumper(null, null, HtmlDumper::DUMP_LIGHT_ARRAY);
+        $dumper->setTheme('light');
+
+        return $dumper->dump($cloner->cloneVar($value), true);
     }
 }
